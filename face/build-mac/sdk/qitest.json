@@ -1,0 +1,14 @@
+[
+  {
+    "environment": null, 
+    "name": "test_face", 
+    "cmd": [
+      "/Users/juanvallejo/Documents/aldebaran/nao/face/build-mac/sdk/bin/test_face"
+    ], 
+    "nightly": false, 
+    "gtest": false, 
+    "working_directory": null, 
+    "timeout": 20, 
+    "perf": false
+  }
+]

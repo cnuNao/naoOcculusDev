@@ -1,0 +1,2 @@
+/Users/juanvallejo/Documents/aldebaran/nao/hello/build-mac/CMakeFiles/hello.dir
+/Users/juanvallejo/Documents/aldebaran/nao/hello/build-mac/CMakeFiles/test_hello.dir

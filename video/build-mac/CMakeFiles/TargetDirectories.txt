@@ -1,0 +1,2 @@
+/Users/juanvallejo/Documents/aldebaran/nao/video/build-mac/CMakeFiles/test_video.dir
+/Users/juanvallejo/Documents/aldebaran/nao/video/build-mac/CMakeFiles/video.dir

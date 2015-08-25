@@ -1,0 +1,2 @@
+/Users/juanvallejo/Documents/aldebaran/nao/face/build-mac/CMakeFiles/face.dir
+/Users/juanvallejo/Documents/aldebaran/nao/face/build-mac/CMakeFiles/test_face.dir

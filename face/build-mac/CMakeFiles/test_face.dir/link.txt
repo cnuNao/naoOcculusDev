@@ -1,0 +1,1 @@
+/usr/bin/c++   -stdlib=libstdc++ -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/test_face.dir/test.cpp.o  -o sdk/bin/test_face  

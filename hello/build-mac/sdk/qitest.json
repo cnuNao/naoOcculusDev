@@ -1,0 +1,14 @@
+[
+  {
+    "environment": null, 
+    "name": "test_hello", 
+    "cmd": [
+      "/Users/juanvallejo/Documents/aldebaran/nao/hello/build-mac/sdk/bin/test_hello"
+    ], 
+    "nightly": false, 
+    "gtest": false, 
+    "working_directory": null, 
+    "timeout": 20, 
+    "perf": false
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "environment": null, 
+    "name": "test_video", 
+    "cmd": [
+      "/Users/juanvallejo/Documents/aldebaran/nao/video/build-mac/sdk/bin/test_video"
+    ], 
+    "nightly": false, 
+    "gtest": false, 
+    "working_directory": null, 
+    "timeout": 20, 
+    "perf": false
+  }
+]
