@@ -90,4 +90,4 @@ qibuild run <module_name> -- --pip <IP_ADDRESS>
 
 - Juan Vallejo
 - Jake Hayhurst
-- Amanda Lee
+
