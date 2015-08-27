@@ -1,1 +1,1 @@
---name;test_face;--timeout;20;--;/Users/juanvallejo/Documents/aldebaran/nao/face/build-mac/sdk/bin/test_face
+--name;test_face;--timeout;20;--;/Users/juanvallejo/Documents/capstone/face/build-mac/sdk/bin/test_face

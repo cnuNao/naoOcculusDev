@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/juanvallejo/Documents/aldebaran/nao/hello/main.cpp
+/Users/juanvallejo/Documents/capstone/hello/main.cpp
 iostream
 -
 alerror/alerror.h

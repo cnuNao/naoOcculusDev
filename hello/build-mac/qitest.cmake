@@ -1,1 +1,1 @@
---name;test_hello;--timeout;20;--;/Users/juanvallejo/Documents/aldebaran/nao/hello/build-mac/sdk/bin/test_hello
+--name;test_hello;--timeout;20;--;/Users/juanvallejo/Documents/capstone/hello/build-mac/sdk/bin/test_hello

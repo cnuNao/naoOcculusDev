@@ -1,0 +1,54 @@
+#!/usr/local/bin/node
+
+var io 		= require('socket.io');
+var socket 	= require('dgram').createSocket('udp4');
+var http 	= require('http');
+var fs 		= require('fs');
+
+var clients = [];
+
+// bind socket
+socket.bind(3000, '0.0.0.0', function() {
+	console.log('status> udp socket connection established.');
+});
+
+socket.on('listening', function() {
+	console.log('status> socket listening on port 3000');
+});
+
+socket.on('close', function() {
+	console.log('status> socket connection closed.');
+});
+
+socket.on('error', function(error) {
+	console.log('status> error connecting to socket -> ' + error.toString());
+});
+
+socket.on('message', function(message) {
+	console.log(message);
+
+	for(var i = 0; i < clients.length; i++) {
+		clients[i].emit('packet', { data: message });
+	}
+});
+
+// browser
+var server = http.createServer(function(request, response) {
+
+	// response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+	fs.readFile(__dirname + '/index.html', function(err, data) {
+		if(err) {
+			return response.end('Error parsing index.html -> ' + err.toString());
+		}
+
+		response.writeHead(200, { 'Content-type': 'text/html' });
+		response.end(data);
+	});
+
+});
+
+server.listen(8000);
+
+io.listen(server).on('connection', function(client) {
+	clients.push(client);
+});

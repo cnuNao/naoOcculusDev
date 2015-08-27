@@ -3,7 +3,7 @@
     "environment": null, 
     "name": "test_hello", 
     "cmd": [
-      "/Users/juanvallejo/Documents/aldebaran/nao/hello/build-mac/sdk/bin/test_hello"
+      "/Users/juanvallejo/Documents/capstone/hello/build-mac/sdk/bin/test_hello"
     ], 
     "nightly": false, 
     "gtest": false, 

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/juanvallejo/Documents/aldebaran/nao/video/main.cpp
+/Users/juanvallejo/Documents/capstone/video/main.cpp
 iostream
 -
 signal.h
@@ -20,13 +20,13 @@ alcommon/albrokermanager.h
 alcommon/altoolsmain.h
 -
 videocapture.h
-/Users/juanvallejo/Documents/aldebaran/nao/video/videocapture.h
+/Users/juanvallejo/Documents/capstone/video/videocapture.h
 
-/Users/juanvallejo/Documents/aldebaran/nao/video/videocapture.cpp
+/Users/juanvallejo/Documents/capstone/video/videocapture.cpp
 iostream
 -
 videocapture.h
-/Users/juanvallejo/Documents/aldebaran/nao/video/videocapture.h
+/Users/juanvallejo/Documents/capstone/video/videocapture.h
 qi/os.hpp
 -
 alvalue/alvalue.h
@@ -38,7 +38,7 @@ alcommon/albroker.h
 alvision/alvisiondefinitions.h
 -
 
-/Users/juanvallejo/Documents/aldebaran/nao/video/videocapture.h
+/Users/juanvallejo/Documents/capstone/video/videocapture.h
 string
 -
 alcommon/almodule.h

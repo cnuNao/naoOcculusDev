@@ -3,7 +3,7 @@
     "environment": null, 
     "name": "test_face", 
     "cmd": [
-      "/Users/juanvallejo/Documents/aldebaran/nao/face/build-mac/sdk/bin/test_face"
+      "/Users/juanvallejo/Documents/capstone/face/build-mac/sdk/bin/test_face"
     ], 
     "nightly": false, 
     "gtest": false, 

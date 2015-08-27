@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
 
 	const int remotePort		= 9559;
 
-	std::string remoteAddress	= "192.168.10.106";
-	std::string phraseToSay 	= "Hey Jake... Don't be leettle beech.";
+	std::string remoteAddress	= "192.168.10.104";
+	std::string phraseToSay 	= "What, am I?";
 
 	if(argc > 1) {
 		phraseToSay = argv[1];
