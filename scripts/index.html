@@ -50,7 +50,7 @@ server.on('packet', function(data) {
 	var bytes = new Uint8Array(data.data);
 	var enc_bytes = encode(bytes);
 	// image.src = encode(bytes);
-    if(bytes.length > 1000){
+    if(bytes.length > 100){
 	   image.setAttribute('src', 'data:image/jpeg;base64,' + enc_bytes);
     }
 	console.log(enc_bytes);
