@@ -1,2 +1,0 @@
-/Users/juanvallejo/Documents/capstone/video/build-mac/CMakeFiles/test_video.dir
-/Users/juanvallejo/Documents/capstone/video/build-mac/CMakeFiles/video.dir

@@ -1,1 +1,0 @@
---name;test_video;--timeout;20;--;/Users/juanvallejo/Documents/capstone/video/build-mac/sdk/bin/test_video

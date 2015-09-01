@@ -1,2 +1,0 @@
-/Users/juanvallejo/Documents/capstone/face/build-mac/CMakeFiles/test_face.dir
-/Users/juanvallejo/Documents/capstone/face/build-mac/CMakeFiles/face.dir
