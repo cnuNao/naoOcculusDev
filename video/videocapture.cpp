@@ -96,6 +96,7 @@ void VideoCapture::xStopVideo() {
 
 }
 
+// http://doc.aldebaran.com/1-14/naoqi/vision/alvideodevice-tuto.html
 void* VideoCapture::xVideoThread(void *pArg) {
 
 	VideoCapture* lThis = (VideoCapture*)pArg;
@@ -107,6 +108,8 @@ void* VideoCapture::xVideoThread(void *pArg) {
 
 	// Buffer duration depends on framerate
 	long long lDuration = 1000000000 / lThis->fFramerate; // in nanoseconds
+
+	
 
 	// extract data
 	try {
@@ -122,8 +125,11 @@ void* VideoCapture::xVideoThread(void *pArg) {
 			// get an image and its metadata
 			lImage = lThis->fALVideoDevice.getImageRemote(lThis->fVideoSubscriberId);
 
+			// to get image data, get lImage[6];
+			const char* imageDataPointer = static_cast<const char*>(lImage[6].GetBinary());
+
 			// parse video data
-			std::cout << lImage.toString() << std::endl;
+			std::cout << *imageDataPointer << std::endl;
 			// end parsing video data
 
 			lThis->fALVideoDevice.releaseImage(lThis->fVideoSubscriberId);
