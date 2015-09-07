@@ -1,5 +1,11 @@
 #!/usr/local/bin/node
 
+/**
+ * get_udp - Receives udp stream from a remote source. 
+ * Parses as array of 8-bit integers and streams to client
+ * as base64-encoded image data.
+ */
+
 var io 		= require('socket.io');
 var socket 	= require('dgram').createSocket('udp4');
 var http 	= require('http');

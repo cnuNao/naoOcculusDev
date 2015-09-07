@@ -1,0 +1,10 @@
+#!/usr/local/bin/node
+
+/**
+ * Retrieves data stream from Oculus Rift
+ */
+
+var hmd = require('node-hmd');
+
+var supportedDevices = hmd.getSupportedDevices();
+console.log(supportedDevices);
