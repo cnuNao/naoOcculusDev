@@ -1,10 +1,45 @@
 #!/usr/local/bin/node
 
 /**
- * Retrieves data stream from Oculus Rift
+ * Retrieves data stream from Oculus Rift.
+ * Warning only works on Windows
  */
 
-var hmd = require('node-hmd');
+// var hmd 	= require('node-hmd');
+// var devices = hmd.getSupportedDevices();
 
-var supportedDevices = hmd.getSupportedDevices();
-console.log(supportedDevices);
+// if(devices.indexOf('oculusrift') == -1) {
+// 	console.error('ERR', 'Oculus Rift not detected. Make sure it has been plugged in.');
+// 	process.exit(1);
+// }
+
+// create a device manager
+// var test = hmd.testing();
+// console.log(test);
+
+// manager.getDeviceInfo(function(err, data) {
+	
+// 	if(err) {
+// 		console.log('ERR', err.toString());
+// 		process.exit(1);
+// 	}
+
+// 	console.log(data);
+
+// });
+
+// manager.getDeviceOrientation(function(err, data) {
+
+// 	if(err) {
+// 		console.log('ERR', err.toString());
+// 		process.exit(1);
+// 	}
+
+// 	console.log(data);
+
+// });
+
+var libOculus = require('node-oculus');
+var oculus = libOculus.createOculus();
+
+oculus.discoverSensor();
