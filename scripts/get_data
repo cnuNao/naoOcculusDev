@@ -7,20 +7,21 @@
 
 var hmd 	= require('node-hmd');
 var devices = hmd.getSupportedDevices();
+var fs = require('fs');
 
 //creating the device manager for the oculus rift
 var manager = hmd.createManager('oculusrift');
  
-manager.getDeviceInfo(function(err, data) 
-{	
-	if(err) 
-	{
- 		console.log('ERR', err.toString());
- 		process.exit(1);
- 	}
- 	console.log(data);
-
- });
+//manager.getDeviceInfo(function(err, data) 
+//{	
+//	if(err) 
+//	{
+// 		console.log('ERR', err.toString());
+// 		process.exit(1);
+// 	}
+// 	console.log(data);
+//
+// });
 
 manager.getDeviceOrientation(function(err, data) 
 {
@@ -30,7 +31,11 @@ manager.getDeviceOrientation(function(err, data)
  		console.log('ERR', err.toString());
  		process.exit(1);
  	}
- 	console.log(data);
+	var roll = data.roll;
+	var pitch = data.pitch;
+	var yaw = data.yaw;
+ 	fs.writeFileSync('data.txt',roll +"\r\n" + pitch + "\r\n" + yaw);
+	console.log(roll);
+	console.log(pitch);
+	console.log(yaw);
  });
-
-oculus.discoverSensor();
