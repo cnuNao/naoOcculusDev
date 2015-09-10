@@ -5,41 +5,32 @@
  * Warning only works on Windows
  */
 
-// var hmd 	= require('node-hmd');
-// var devices = hmd.getSupportedDevices();
+var hmd 	= require('node-hmd');
+var devices = hmd.getSupportedDevices();
 
-// if(devices.indexOf('oculusrift') == -1) {
-// 	console.error('ERR', 'Oculus Rift not detected. Make sure it has been plugged in.');
-// 	process.exit(1);
-// }
+//creating the device manager for the oculus rift
+var manager = hmd.createManager('oculusrift');
+ 
+manager.getDeviceInfo(function(err, data) 
+{	
+	if(err) 
+	{
+ 		console.log('ERR', err.toString());
+ 		process.exit(1);
+ 	}
+ 	console.log(data);
 
-// create a device manager
-// var test = hmd.testing();
-// console.log(test);
+ });
 
-// manager.getDeviceInfo(function(err, data) {
-	
-// 	if(err) {
-// 		console.log('ERR', err.toString());
-// 		process.exit(1);
-// 	}
+manager.getDeviceOrientation(function(err, data) 
+{
 
-// 	console.log(data);
-
-// });
-
-// manager.getDeviceOrientation(function(err, data) {
-
-// 	if(err) {
-// 		console.log('ERR', err.toString());
-// 		process.exit(1);
-// 	}
-
-// 	console.log(data);
-
-// });
-
-var libOculus = require('node-oculus');
-var oculus = libOculus.createOculus();
+ 	if(err) 
+	{
+ 		console.log('ERR', err.toString());
+ 		process.exit(1);
+ 	}
+ 	console.log(data);
+ });
 
 oculus.discoverSensor();
