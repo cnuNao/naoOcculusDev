@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
 		AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
 
 		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes 	= AL::ALValue::array(3.0f, 6.0f, 9.0f);
+		AL::ALValue targetTimes 	= AL::ALValue::array(1.0f, 1.0f, 1.0f);
 
 		// define if angles are absolute
 		bool anglesAreAbsolute 		= true;
