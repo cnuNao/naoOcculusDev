@@ -7,6 +7,7 @@
 
 var hmd 	= require('node-hmd');
 var devices = hmd.getSupportedDevices();
+<<<<<<< HEAD
 
 // if(devices.indexOf('oculusrift') == -1) {
 // 	console.error('ERR', 'Oculus Rift not detected. Make sure it has been plugged in.');
@@ -42,7 +43,8 @@ manager.getDeviceOrientation(function(err, data) {
 	var yall;
 
 	console.log(data);
-
+	
+ 	// fs.writeFile('data.txt', roll + "\r\n" + pitch + "\r\n" + yaw + "\r\n");
 
 });
 
