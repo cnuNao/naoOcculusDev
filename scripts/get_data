@@ -42,7 +42,6 @@ function onDeviceOrientdationData(data, callback) {
 		console.log('message sent...');
 	}
 
-	socket.close();
 	callback.call();
 
 });
