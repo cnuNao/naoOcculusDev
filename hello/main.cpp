@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
 	const int remotePort		= 9559;
 
 	std::string remoteAddress	= "192.168.10.103";
-	std::string phraseToSay 	= "Hello, Jonah";
+	std::string phraseToSay 	= "I will listen for udp messages after my head is done moving.";
 
 	if(argc > 1) {
 		phraseToSay = argv[1];

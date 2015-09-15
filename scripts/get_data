@@ -11,24 +11,26 @@ var socket 	= require('dgram').createSocket('udp4');
 
 var manager = hmd.createManager('oculusrift');
 
-manager.getDeviceOrientation(function(err, data) {
+function getDeviceOrientation() {
+	manager.getDeviceOrientation(function(err, data) {
 
-	if(err) {
-		console.log('ERR', err.toString());
-		process.exit(1);
-	}
-	
-	var roll;
-	var pitch;
-	var yall;
+		if(err) {
+			console.log('ERR', err.toString());
+			process.exit(1);
+		}
+		
+		var roll;
+		var pitch;
+		var yall;
 
-	onDeviceOrientdationData(data);
-	
- 	// fs.writeFile('data.txt', roll + "\r\n" + pitch + "\r\n" + yaw + "\r\n");
+		onDeviceOrientdationData(data, getDeviceOrientation);
+		
+	 	// fs.writeFile('data.txt', roll + "\r\n" + pitch + "\r\n" + yaw + "\r\n");
 
-});
+	});
+}
 
-function onDeviceOrientdationData(data) {
+function onDeviceOrientdationData(data, callback) {
 
 	var message = new Buffer(JSON.stringify(data), 'utf-8');
 
@@ -41,7 +43,15 @@ function onDeviceOrientdationData(data) {
 	}
 
 	socket.close();
+	callback.call();
 
 });
 
 }
+
+/**
+ * Main function
+ */
+(function main() {
+	getDeviceOrientation();
+})();
