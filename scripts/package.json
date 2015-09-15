@@ -4,10 +4,10 @@
   "description": "capstone scripts",
   "main": "index.js",
   "dependencies": {
-    "socket.io": "^1.3.6",
-    "node-hdm": "node-hmd-master"
+    "socket.io": "^1.3.6"
   },
   "devDependencies": {
+    "node-hmd": "file:node-hmd-master",
     "node-oculus": "^1.0.1"
   },
   "scripts": {
