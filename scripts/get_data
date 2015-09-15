@@ -5,41 +5,37 @@
  * Warning only works on Windows
  */
 
-// var hmd 	= require('node-hmd');
-// var devices = hmd.getSupportedDevices();
+var hmd 	= require('node-hmd');
+var devices = hmd.getSupportedDevices();
+var fs = require('fs');
 
-// if(devices.indexOf('oculusrift') == -1) {
-// 	console.error('ERR', 'Oculus Rift not detected. Make sure it has been plugged in.');
-// 	process.exit(1);
-// }
-
-// create a device manager
-// var test = hmd.testing();
-// console.log(test);
-
-// manager.getDeviceInfo(function(err, data) {
-	
-// 	if(err) {
+//creating the device manager for the oculus rift
+var manager = hmd.createManager('oculusrift');
+ 
+//manager.getDeviceInfo(function(err, data) 
+//{	
+//	if(err) 
+//	{
 // 		console.log('ERR', err.toString());
 // 		process.exit(1);
 // 	}
-
 // 	console.log(data);
-
+//
 // });
 
-// manager.getDeviceOrientation(function(err, data) {
+manager.getDeviceOrientation(function(err, data) 
+{
 
-// 	if(err) {
-// 		console.log('ERR', err.toString());
-// 		process.exit(1);
-// 	}
-
-// 	console.log(data);
-
-// });
-
-var libOculus = require('node-oculus');
-var oculus = libOculus.createOculus();
-
-oculus.discoverSensor();
+ 	if(err) 
+	{
+ 		console.log('ERR', err.toString());
+ 		process.exit(1);
+ 	}
+	var roll = data.roll;
+	var pitch = data.pitch;
+	var yaw = data.yaw;
+ 	fs.writeFileSync('data.txt',roll +"\r\n" + pitch + "\r\n" + yaw);
+	console.log(roll);
+	console.log(pitch);
+	console.log(yaw);
+ });
