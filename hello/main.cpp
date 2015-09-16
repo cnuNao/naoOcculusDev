@@ -82,8 +82,8 @@ int main(int argc, char** argv) {
 	}
 
 	// create a proxy module and invoke its 'say' method
-	AL::ALProxy textToSpeechProxy("ALTextToSpeech", remoteAddress, remotePort);
-	textToSpeechProxy.callVoid("say", phraseToSay);
+	// AL::ALProxy textToSpeechProxy("ALTextToSpeech", remoteAddress, remotePort);
+	// textToSpeechProxy.callVoid("say", phraseToSay);
 
 	// move the head of the robot
 	const AL::ALValue jointName = "HeadYaw";
@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
 		AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
 
 		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes 	= AL::ALValue::array(1.0f, 1.0f, 1.0f);
+		AL::ALValue targetTimes 	= AL::ALValue::array(1.0f, 2.0f, 3.0f);
 
 		// define if angles are absolute
 		bool anglesAreAbsolute 		= true;
