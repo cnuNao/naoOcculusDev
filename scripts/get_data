@@ -25,13 +25,11 @@ function getDeviceOrientation() {
 
 		onDeviceOrientdationData(data, getDeviceOrientation);
 		
-	 	// fs.writeFile('data.txt', roll + "\r\n" + pitch + "\r\n" + yaw + "\r\n");
-
 	});
 }
 
 function onDeviceOrientdationData(data, callback) {
-	
+
 	var message = new Buffer(data.yaw + ',' + data.pitch + ',' + data.roll, 'utf-8');
 
 	socket.send(message, 0, message.length, 14552, '192.168.10.102', function(err, bytes) {
@@ -42,7 +40,8 @@ function onDeviceOrientdationData(data, callback) {
 		console.log('message sent...');
 	}
 
-	callback.call();
+	clearTimeout(onDeviceOrientdationData.timeout);
+	onDeviceOrientdationData.timeout = setTimeout(callback, 1000);
 
 });
 
