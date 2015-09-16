@@ -31,10 +31,7 @@ function getDeviceOrientation() {
 }
 
 function onDeviceOrientdationData(data, callback) {
-
-	var yaw = data.yaw;
-	var pitch = 
-
+	
 	var message = new Buffer(data.yaw + ',' + data.pitch + ',' + data.roll, 'utf-8');
 
 	socket.send(message, 0, message.length, 14552, '192.168.10.102', function(err, bytes) {
