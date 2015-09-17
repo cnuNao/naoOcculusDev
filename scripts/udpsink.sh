@@ -4,7 +4,7 @@ ip="$1"
 
 if [ -z "$1" ]
 	then
-	echo please input your IP address
+	echo please input your IP address as an argument
 	exit
 fi
 
