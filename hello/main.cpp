@@ -27,21 +27,40 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	const AL::ALValue headYaw 		= "HeadYaw";
 	const AL::ALValue headPitch 	= "HeadPitch";
 
-	// AL::ALValue headStiffness 		= 0.0f;
-	// AL::ALValue targetTime 			= 1.0f;
+	float yaw 						= radians[0];
+	float pitch 					= radians[1];
 
-	// head guards
-	if(radians[0] > 1.4f || radians[0] < -1.4f) {
-		std::cout << "ERR Head value limit exceeded" << std::endl;
+	// action guards
+	if(radians[0] > -0.1f && radians[0] < 0.1f && radians[1] > -0.1 && radians[1] < 0.1) {
+		std::cout << "Movement delta too low. Ignoring..." << std::endl;
 		return false;
+	}
+
+	// yaw guards
+	if(radians[0] > 1.4f || radians[0] < -1.4f) {
+		std::cout << "ERR Yaw value limit exceeded" << std::endl;
+		if(radians[0] < 0) {
+			yaw = -1.4f;
+		} else {
+			yaw = 1.4f;
+		}
+	}
+
+	// pitch guards
+	if(radians[1] > 0.6f || radians[1] < -0.6f) {
+		std::cout << "ERR Pitch value limit exceeded" << std::endl;
+		if(radians[1] < 0) {
+			pitch = -0.6f;
+		} else {
+			pitch = 0.6f;
+		}
 	}
 
 	try {	
 
 		// set angles for head, in radians
-		// AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
 		//0.6 is the Pitch Guard
-		AL::ALValue headYawTargetAngles	= AL::ALValue::array(radians[0]);
+		AL::ALValue headYawTargetAngles	= AL::ALValue::array(yaw);
 
 		// set target times, at which angles wiill be reached
 		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f);		
@@ -50,12 +69,6 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 		// The joint will reach the desired angle at the specified time.
 		proxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
 		// proxy.angleInterpolation(headPitch, headYawTargetAngles, targetTimes, anglesAreAbsolute);
-
-
-		// remove the stiffness on the head. We no longer need to move it.
-		// proxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
-		// proxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
-
 
 	} catch(const AL::ALError& error) {
 		std::cerr << "Caught exception: " << error.what() << std::endl;
@@ -159,7 +172,7 @@ int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 	  std::string message(mesg);
 	  accel_data = split_string(message);
 
-	  std::cout << "accelerometer data received" << std::endl;
+	  std::cout << "Accelerometer data received: " << accel_data[0] << "," << accel_data[1] << std::endl;
 	  nao_moveHead(motionProxy, accel_data);
 
 	}
