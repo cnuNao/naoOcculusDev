@@ -17,7 +17,18 @@
 #include <string.h>
 #include <stdio.h>
 
-int split_string(std::string string) {
+bool move_head(std::vector<float> radians) {
+
+}
+
+/**
+ * Split an std::string into a vector of floats
+ * containing yaw, pitch, and roll from a udp
+ * stream.
+ *
+ * @return std::vector<float> {yaw, pitch, roll}
+ */
+std::vector<float> split_string(std::string string) {
 
 
 	std::stringstream stream(string);
@@ -29,17 +40,21 @@ int split_string(std::string string) {
 		data.push_back(std::atof(word.c_str()));
 	}
 
-	return 0;
+	return data;
 
 }
 
-int get_udp() {
+int get_accel_stream() {
 
 	int sockfd;
 	int n;
 
 	struct sockaddr_in servaddr;
 	struct sockaddr_in cliaddr;
+
+	// yaw 		= accel_data[0]
+	 // pitch 	= accel_data[1]
+	std::vector<float> accel_data;
 
 	socklen_t len;
 
@@ -48,7 +63,7 @@ int get_udp() {
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
-	// set first n bytes of the area starting at first
+	// set first 0 bytes of the area starting at first
 	// address location of our servaddr to zero. ('\0')
 	memset(&servaddr, sizeof(servaddr), 0);
 	servaddr.sin_family = AF_INET;
@@ -76,7 +91,10 @@ int get_udp() {
 
 	  mesg[n] = 0;
 	  std::string message(mesg);
-	  split_string(message);
+	  accel_data = split_string(message);
+
+	  std::cout << "accelerometer data received" << std::endl;
+	  move_head(accel_data);
 
 	}
 
@@ -148,7 +166,7 @@ int main(int argc, char** argv) {
 
 
 		std::cout << "Listening for udp input" << std::endl;
-		get_udp();	
+		get_accel_stream();	
 
 	} catch(const AL::ALError& error) {
 		std::cerr << "Caught exception: " << error.what() << std::endl;
