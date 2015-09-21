@@ -56,11 +56,14 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 		}
 	}
 
+	// adjust pitch
+	pitch *= -1.0f;
+
 	try {	
 
 		// set angles for head, in radians
-		//0.6 is the Pitch Guard
-		AL::ALValue headYawTargetAngles	= AL::ALValue::array(yaw);
+		AL::ALValue headYawTargetAngles		= AL::ALValue::array(yaw);
+		AL::ALValue headPitchTargetAngles	= AL::ALValue::array(pitch);
 
 		// set target times, at which angles wiill be reached
 		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f);		
@@ -68,7 +71,7 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 		// call the angle interpolation method.
 		// The joint will reach the desired angle at the specified time.
 		proxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
-		// proxy.angleInterpolation(headPitch, headYawTargetAngles, targetTimes, anglesAreAbsolute);
+		proxy.angleInterpolation(headPitch, headPitchTargetAngles, targetTimes, anglesAreAbsolute);
 
 	} catch(const AL::ALError& error) {
 		std::cerr << "Caught exception: " << error.what() << std::endl;
