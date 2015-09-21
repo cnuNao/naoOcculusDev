@@ -9,15 +9,29 @@
 #include <alproxies/almotionproxy.h>
 #include <alcommon/alproxy.h>
 
-#include <curlpp/cURLpp.hpp>
-#include <curlpp/Easy.hpp>
-#include <curlpp/Options.hpp>
+#include <sstream>
 
 // import udp headers
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <stdio.h>
+
+int split_string(std::string string) {
+
+
+	std::stringstream stream(string);
+	std::string word;
+
+	std::vector<float> data;
+
+	for(;std::getline(stream, word, ',');) {
+		data.push_back(std::atof(word.c_str()));
+	}
+
+	return 0;
+
+}
 
 int get_udp() {
 
@@ -61,16 +75,16 @@ int get_udp() {
 	  sendto(sockfd, mesg, n, 0, (struct sockaddr *)&cliaddr, len);
 
 	  mesg[n] = 0;
-	  printf("Message received: %s \n", mesg);
+	  std::string message(mesg);
+	  split_string(message);
 
 	}
+
+	return 0;
 
 }
 
 int main(int argc, char** argv) {
-
-	curlpp::Cleanup cleanup;
-	curlpp::Easy 	request;
 
 	const int remotePort		= 9559;
 
@@ -86,7 +100,8 @@ int main(int argc, char** argv) {
 	// textToSpeechProxy.callVoid("say", phraseToSay);
 
 	// move the head of the robot
-	const AL::ALValue jointName = "HeadYaw";
+	const AL::ALValue headYaw = "HeadYaw";
+	const AL::ALValue headPitch = "HeadPitch";
 
 	try {
 
@@ -104,26 +119,33 @@ int main(int argc, char** argv) {
 		AL::ALValue targetTime 			= 1.0f;
 
 		// call stiffness interpolation method
-		motionProxy.stiffnessInterpolation(jointName, headStiffness, targetTime);
+		motionProxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
+		motionProxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
 
 		// set angles for head, in radians
-		AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
+		// AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
+		//0.6 is the Pitch Guard
+		AL::ALValue headYawTargetAngles	= AL::ALValue::array(0.3f, 0.6f, 0.0f);
 
 		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes 	= AL::ALValue::array(1.0f, 2.0f, 3.0f);
+		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f, 0.6f, 0.9f);
 
 		// define if angles are absolute
 		bool anglesAreAbsolute 		= true;
 
 		// call the angle interpolation method.
 		// The joint will reach the desired angle at the specified time.
-		motionProxy.angleInterpolation(jointName, targetAngles, targetTimes, anglesAreAbsolute);
+		// motionProxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
+		// motionProxy.angleInterpolation(headPitch, headYawTargetAngles, targetTimes, anglesAreAbsolute);
+
 
 		// remove the stiffness on the head. We no longer need to move it.
 		headStiffness 	= 0.0f;
 		targetTime 		= 1.0f;
 
-		motionProxy.stiffnessInterpolation(jointName, headStiffness, targetTime);
+		motionProxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
+		motionProxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
+
 
 		std::cout << "Listening for udp input" << std::endl;
 		get_udp();	
