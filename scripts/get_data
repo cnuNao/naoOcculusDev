@@ -37,7 +37,7 @@ function onDeviceOrientdationData(data, callback) {
 	if(err) {
 		console.log('error sending message> ' + err);
 	} else {
-		console.log('message sent...');
+		console.log('message sent: ' + message.toString());
 	}
 
 	clearTimeout(onDeviceOrientdationData.timeout);
