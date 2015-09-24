@@ -17,7 +17,89 @@
 #include <string.h>
 #include <stdio.h>
 
-bool move_head(std::vector<float> radians) {
+const int remotePort		= 9559;
+std::string remoteAddress	= "192.168.10.103";
+
+bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
+
+	bool anglesAreAbsolute 			= true;
+
+	const AL::ALValue headYaw 		= "HeadYaw";
+	const AL::ALValue headPitch 	= "HeadPitch";
+
+	float yaw 						= radians[0];
+	float pitch 					= radians[1];
+
+	// action guards
+	if(radians[0] > -0.1f && radians[0] < 0.1f && radians[1] > -0.1 && radians[1] < 0.1) {
+		std::cout << "Movement delta too low. Ignoring..." << std::endl;
+		return false;
+	}
+
+	// yaw guards
+	if(radians[0] > 1.4f || radians[0] < -1.4f) {
+		std::cout << "ERR Yaw value limit exceeded" << std::endl;
+		if(radians[0] < 0) {
+			yaw = -1.4f;
+		} else {
+			yaw = 1.4f;
+		}
+	}
+
+	// pitch guards
+	if(radians[1] > 0.6f || radians[1] < -0.6f) {
+		std::cout << "ERR Pitch value limit exceeded" << std::endl;
+		if(radians[1] < 0) {
+			pitch = -0.6f;
+		} else {
+			pitch = 0.6f;
+		}
+	}
+
+	// adjust pitch
+	pitch *= -1.0f;
+
+	try {	
+
+		// set angles for head, in radians
+		AL::ALValue headYawTargetAngles		= AL::ALValue::array(yaw);
+		AL::ALValue headPitchTargetAngles	= AL::ALValue::array(pitch);
+
+		// set target times, at which angles wiill be reached
+		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f);		
+
+		// call the angle interpolation method.
+		// The joint will reach the desired angle at the specified time.
+		proxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
+		proxy.angleInterpolation(headPitch, headPitchTargetAngles, targetTimes, anglesAreAbsolute);
+
+	} catch(const AL::ALError& error) {
+		std::cerr << "Caught exception: " << error.what() << std::endl;
+		exit(1);
+	}
+
+	return true;
+
+}
+
+bool nao_sayPhrase(const char *phrase) {
+
+	std::string phraseToSay = phrase;
+	if(phraseToSay == "") {
+		return false;
+	}
+
+	try {
+
+		AL::ALProxy textToSpeechProxy("ALTextToSpeech", remoteAddress, remotePort);
+		textToSpeechProxy.callVoid("say", phraseToSay);
+	
+	} catch(const AL::ALError& error) {
+		std::cerr << "Caught exception: " << error.what() << std::endl;
+		exit(1);
+	}
+
+	return true;
 
 }
 
@@ -44,7 +126,7 @@ std::vector<float> split_string(std::string string) {
 
 }
 
-int get_accel_stream() {
+int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 
 	int sockfd;
 	int n;
@@ -53,7 +135,7 @@ int get_accel_stream() {
 	struct sockaddr_in cliaddr;
 
 	// yaw 		= accel_data[0]
-	 // pitch 	= accel_data[1]
+	// pitch 	= accel_data[1]
 	std::vector<float> accel_data;
 
 	socklen_t len;
@@ -93,8 +175,8 @@ int get_accel_stream() {
 	  std::string message(mesg);
 	  accel_data = split_string(message);
 
-	  std::cout << "accelerometer data received" << std::endl;
-	  move_head(accel_data);
+	  std::cout << "Accelerometer data received: " << accel_data[0] << "," << accel_data[1] << std::endl;
+	  nao_moveHead(motionProxy, accel_data);
 
 	}
 
@@ -104,74 +186,28 @@ int get_accel_stream() {
 
 int main(int argc, char** argv) {
 
-	const int remotePort		= 9559;
-
-	std::string remoteAddress	= "192.168.10.103";
-	std::string phraseToSay 	= "I will listen for udp messages after my head is done moving.";
-
+	// if an extra text argument is passed, say it
 	if(argc > 1) {
-		phraseToSay = argv[1];
+		nao_sayPhrase(argv[1]);
 	}
 
-	// create a proxy module and invoke its 'say' method
-	// AL::ALProxy textToSpeechProxy("ALTextToSpeech", remoteAddress, remotePort);
-	// textToSpeechProxy.callVoid("say", phraseToSay);
+	const AL::ALValue headYaw 		= "HeadYaw";
+	const AL::ALValue headPitch 	= "HeadPitch";
 
-	// move the head of the robot
-	const AL::ALValue headYaw = "HeadYaw";
-	const AL::ALValue headPitch = "HeadPitch";
+	// set initial stiffness of head in order to be able to move it.
+	// If head is not stiff, it cannot be moved. Target time is the second to execute stiffness command.
+	AL::ALValue headStiffness 		= 1.0f;
+	AL::ALValue targetTime 			= 1.0f;
 
-	try {
+	// create an almotion proxy
+	AL::ALMotionProxy motionProxy(remoteAddress, remotePort);
 
-		/**
-		 * We are forced to import and use the ALMotionProxy module, as it is not available through
-		 * the generic ALProxy module
-		 */
-
-		// create an almotion proxy
-		AL::ALMotionProxy motionProxy(remoteAddress, remotePort);
-		
-		// set initial stiffness of head in order to be able to move it.
-		// If head is not stiff, it cannot be moved. Target time is the second to execute stiffness command.
-		AL::ALValue headStiffness 		= 1.0f;
-		AL::ALValue targetTime 			= 1.0f;
-
-		// call stiffness interpolation method
-		motionProxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
-		motionProxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
-
-		// set angles for head, in radians
-		// AL::ALValue targetAngles 	= AL::ALValue::array(-1.5f, 1.5f, 0.0f);
-		//0.6 is the Pitch Guard
-		AL::ALValue headYawTargetAngles	= AL::ALValue::array(0.3f, 0.6f, 0.0f);
-
-		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f, 0.6f, 0.9f);
-
-		// define if angles are absolute
-		bool anglesAreAbsolute 		= true;
-
-		// call the angle interpolation method.
-		// The joint will reach the desired angle at the specified time.
-		// motionProxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
-		// motionProxy.angleInterpolation(headPitch, headYawTargetAngles, targetTimes, anglesAreAbsolute);
-
-
-		// remove the stiffness on the head. We no longer need to move it.
-		headStiffness 	= 0.0f;
-		targetTime 		= 1.0f;
-
-		motionProxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
-		motionProxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
-
-
-		std::cout << "Listening for udp input" << std::endl;
-		get_accel_stream();	
-
-	} catch(const AL::ALError& error) {
-		std::cerr << "Caught exception: " << error.what() << std::endl;
-		exit(1);
-	}
+	// call stiffness interpolation method, obtain contol of head
+	motionProxy.stiffnessInterpolation(headYaw, headStiffness, targetTime);
+	motionProxy.stiffnessInterpolation(headPitch, headStiffness, targetTime);
+	
+	std::cout << "Listening for udp input" << std::endl;
+	get_accel_stream(motionProxy);
 
 	return 0;
 
