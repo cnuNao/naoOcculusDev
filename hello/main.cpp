@@ -17,15 +17,14 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <time.h>
+
 const int remotePort		= 9559;
 std::string remoteAddress	= "192.168.10.103";
-
+bool HEAD_MOVED = false;
 bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 
 	bool anglesAreAbsolute 			= true;
-
-	const AL::ALValue headYaw 		= "HeadYaw";
-	const AL::ALValue headPitch 	= "HeadPitch";
 
 	float yaw 						= radians[0];
 	float pitch 					= radians[1];
@@ -33,7 +32,9 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	// action guards
 	if(radians[0] > -0.1f && radians[0] < 0.1f && radians[1] > -0.1 && radians[1] < 0.1) {
 		std::cout << "Movement delta too low. Ignoring..." << std::endl;
+		HEAD_MOVED = false;
 		return false;
+
 	}
 
 	// yaw guards
@@ -44,6 +45,7 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 		} else {
 			yaw = 1.4f;
 		}
+		
 	}
 
 	// pitch guards
@@ -54,27 +56,39 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 		} else {
 			pitch = 0.6f;
 		}
+		
 	}
 
 	// adjust pitch
 	pitch *= -1.0f;
 
-	try {	
+	try {
 
 		// set angles for head, in radians
-		AL::ALValue headYawTargetAngles		= AL::ALValue::array(yaw);
-		AL::ALValue headPitchTargetAngles	= AL::ALValue::array(pitch);
+		AL::ALValue jointNames 	= AL::ALValue::array("HeadYaw", "HeadPitch");
 
 		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes 	= AL::ALValue::array(0.3f);		
+		AL::ALValue targetTimes;
+		AL::ALValue targetAngles;
+
+		targetTimes.arraySetSize(2);
+		targetAngles.arraySetSize(2);
+
+		targetTimes[0] = AL::ALValue::array(0.3f);
+		targetTimes[1] = AL::ALValue::array(0.3f);
+
+		targetAngles[0] = AL::ALValue::array(yaw);
+		targetAngles[1] = AL::ALValue::array(pitch);
 
 		// call the angle interpolation method.
 		// The joint will reach the desired angle at the specified time.
-		proxy.angleInterpolation(headYaw, headYawTargetAngles, targetTimes, anglesAreAbsolute);
-		proxy.angleInterpolation(headPitch, headPitchTargetAngles, targetTimes, anglesAreAbsolute);
+		proxy.angleInterpolation(jointNames, targetAngles, targetTimes, anglesAreAbsolute);
+
+		HEAD_MOVED = true;
 
 	} catch(const AL::ALError& error) {
 		std::cerr << "Caught exception: " << error.what() << std::endl;
+		HEAD_MOVED = false;
 		exit(1);
 	}
 
@@ -164,20 +178,24 @@ int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 	// loop forever listening for messages
 	while(1) {
 
-	  len = sizeof(cliaddr);
+		len = sizeof(cliaddr);
 
-	  // receive message from 0.0.0.0 on port 32000, cast the client address to
-	  // socket friendly memory space
-	  n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *)&cliaddr, &len);
-	  sendto(sockfd, mesg, n, 0, (struct sockaddr *)&cliaddr, len);
+		// receive message from 0.0.0.0 on port 32000, cast the client address to
+		// socket friendly memory space
+		n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *)&cliaddr, &len);
+		sendto(sockfd, mesg, n, 0, (struct sockaddr *)&cliaddr, len);
 
-	  mesg[n] = 0;
-	  std::string message(mesg);
-	  accel_data = split_string(message);
+		mesg[n] = 0;
+		std::string message(mesg);
+		accel_data = split_string(message);
 
-	  std::cout << "Accelerometer data received: " << accel_data[0] << "," << accel_data[1] << std::endl;
-	  nao_moveHead(motionProxy, accel_data);
+		std::cout << "Accelerometer data received: " << accel_data[0] << "," << accel_data[1] << std::endl;
 
+		nao_moveHead(motionProxy, accel_data);
+		if (!HEAD_MOVED)
+		{
+			usleep(300000);
+		}
 	}
 
 	return 0;
