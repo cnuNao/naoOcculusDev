@@ -21,7 +21,9 @@
 
 const int remotePort		= 9559;
 std::string remoteAddress	= "192.168.10.103";
+
 bool HEAD_MOVED = false;
+
 bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 
 	bool anglesAreAbsolute 			= true;
@@ -89,7 +91,6 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	} catch(const AL::ALError& error) {
 		std::cerr << "Caught exception: " << error.what() << std::endl;
 		HEAD_MOVED = false;
-		exit(1);
 	}
 
 	return true;
@@ -194,7 +195,7 @@ int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 		nao_moveHead(motionProxy, accel_data);
 		if (!HEAD_MOVED)
 		{
-			usleep(300000);
+			usleep(250000);
 		}
 	}
 
