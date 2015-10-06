@@ -86,7 +86,15 @@ qibuild run <module_name> -- --pip <IP_ADDRESS>
 
 **Make note of the double dashes** before the first argument. These *escape* the rest of the dashes before each flag.
 
-###Project members
+### Troubleshooting
+
+In the event of error during either configuring or building a project, use
+
+```
+qibuild <configure / make / run> <project_name> -c <toolchain>
+```
+
+### Project members
 
 - Juan Vallejo
 - Jake Hayhurst
