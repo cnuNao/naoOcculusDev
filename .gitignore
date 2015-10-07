@@ -1,7 +1,7 @@
 .qi
 .DS_Store
 node_modules
-build-mac
+build-*
 pynaoqi
 *.log
 *.sublime-*
