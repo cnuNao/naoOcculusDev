@@ -3,7 +3,7 @@ project(hello)
 
 find_package(qibuild)
 
-set(CMAKE_PREFIX_PATH "/usr/local/bin;/usr/bin"; ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH "/usr/local/bin;/usr/bin;/opt/naoqi_sdk/lib;/opt/naoqi_sdk/share/cmake"; ${CMAKE_PREFIX_PATH})
 
 # Create a executable named hello
 # with the source file: main.cpp
