@@ -3,17 +3,19 @@ project(face)
 
 find_package(qibuild)
 
-# define source files
+set(CMAKE_PREFIX_PATH "/usr/local/bin;/usr/bin;/opt/naoqi_sdk/lib;/opt/naoqi_sdk/share/cmake"; ${CMAKE_PREFIX_PATH})
+
 set(_srcs
-	main.cpp
-	onfacedetection.h
-	onfacedetection.cpp
+    main.cpp
+    onfacedetection.h
+    onfacedetection.cpp
 )
 
-# Create a executable named face
+# Create a executable named hello
 # with the source file: main.cpp
 qi_create_bin(face ${_srcs})
 
+# Add dependencies to created bin
 qi_use_lib(face ALCOMMON ALPROXIES ALTHREAD)
 
 # Add a simple test:
