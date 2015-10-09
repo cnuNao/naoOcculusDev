@@ -7,6 +7,8 @@
  * @author juanvallejo
  */
 
+#ifdef _WIN32
+
 #include <stdio.h>
 #include <winsock2.h>
 
@@ -82,3 +84,5 @@ int main() {
 
 	return 0;
 }
+
+#endif
