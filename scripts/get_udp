@@ -30,6 +30,9 @@ socket.on('error', function(error) {
 	console.log('status> error connecting to socket -> ' + error.toString());
 });
 
+/**
+* gets a message to be displayed and drops the packets if they do not contain enough data 
+*/
 socket.on('message', function(message) {
 
 	// encode array buffer into base64
@@ -45,7 +48,9 @@ socket.on('message', function(message) {
 
 });
 
-// browser
+/**
+*creates the server on which the images will be displayed on
+*/
 var server = http.createServer(function(request, response) {
 
 	// response.writeHead(200, { 'Content-Type': 'image/jpeg' });
