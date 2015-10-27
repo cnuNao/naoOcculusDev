@@ -48,7 +48,7 @@ function onDeviceOrientdationData(data, callback) {
 	}
 
 	clearTimeout(onDeviceOrientdationData.timeout);
-	onDeviceOrientdationData.timeout = setTimeout(callback, 700);
+	onDeviceOrientdationData.timeout = setTimeout(callback, 150);
 
 });
 
