@@ -1,6 +1,7 @@
 /*
  * Module for extracting data from the robot
- *
+ * POSSIBLE FIX - Average every 5 values before sending to robot
+ * Infinite impulse response
  * @author juanvallejo
  */
 
@@ -20,9 +21,16 @@
 #include <time.h>
 
 const int remotePort		= 9559;
-std::string remoteAddress	= "192.168.10.103";
+std::string remoteAddress	= "192.168.10.114";
 
 bool HEAD_MOVED = false;
+int dataCount = 0;
+
+float dataYawAverage = 0.0;
+float dataPitchAverage = 0.0;
+
+float dataYawAverageLastValue = 0.0;
+float dataPitchAverageLastValue = 0.0;
 
 /**
 * recieves data and then tells the robot to move its head accordingly with correct delay
@@ -35,12 +43,12 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	float pitch 					= radians[1];
 
 	// action guards
-	if(radians[0] > -0.1f && radians[0] < 0.1f && radians[1] > -0.1 && radians[1] < 0.1) {
-		std::cout << "Movement delta too low. Ignoring..." << std::endl;
-		HEAD_MOVED = false;
-		return false;
+	// if(radians[0] > -0.2f && radians[0] < 0.2f && radians[1] > -0.18 && radians[1] < 0.18) {
+	// 	std::cout << "IGNORE Radian delta too low. Ignoring..." << std::endl;
+	// 	HEAD_MOVED = false;
+	// 	return false;
 
-	}
+	// }
 
 	// yaw guards
 	if(radians[0] > 1.4f || radians[0] < -1.4f) {
@@ -67,33 +75,67 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	// adjust pitch
 	pitch *= -1.0f;
 
-	try {
+	if(dataCount >= 5) {
 
-		// set angles for head, in radians
-		AL::ALValue jointNames 	= AL::ALValue::array("HeadYaw", "HeadPitch");
+		// reset dataCount
+		dataCount = 0;
 
-		// set target times, at which angles wiill be reached
-		AL::ALValue targetTimes;
-		AL::ALValue targetAngles;
+		dataYawAverage /= 5.0;
+		dataPitchAverage /= 5.0;
 
-		targetTimes.arraySetSize(2);
-		targetAngles.arraySetSize(2);
+		// std::cout << "Moving head yaw with value " << dataYawAverage << " (diff = " << std::abs((std::abs(dataYawAverageLastValue) - std::abs(dataYawAverage))) << ")" << std::endl;
+		// std::cout << "Moving head pitch with value " << dataPitchAverage << std::endl;
 
-		targetTimes[0] = AL::ALValue::array(0.3f);
-		targetTimes[1] = AL::ALValue::array(0.3f);
+		// if(std::abs(std::abs(dataYawAverageLastValue) - std::abs(dataYawAverage)) < 0.5 || std::abs(std::abs(dataPitchAverageLastValue) - std::abs(dataPitchAverage)) < 0.5) {
+			// std::cout << "Movement  delta too low... (" << "..." << ") Ignoring..." << std::endl;
+		// } else {
 
-		targetAngles[0] = AL::ALValue::array(yaw);
-		targetAngles[1] = AL::ALValue::array(pitch);
+			std::cout << "MOVING HEAD: Movement information gathered... " << "(" << dataYawAverage << ", " << dataPitchAverage << ")" << std::endl;
 
-		// call the angle interpolation method.
-		// The joint will reach the desired angle at the specified time.
-		proxy.angleInterpolation(jointNames, targetAngles, targetTimes, anglesAreAbsolute);
+			try {
 
-		HEAD_MOVED = true;
+				// set angles for head, in radians
+				AL::ALValue jointNames 	= AL::ALValue::array("HeadYaw", "HeadPitch");
 
-	} catch(const AL::ALError& error) {
-		std::cerr << "Caught exception: " << error.what() << std::endl;
-		HEAD_MOVED = false;
+				// set target times, at which angles wiill be reached
+				AL::ALValue targetTimes;
+				AL::ALValue targetAngles;
+
+				targetTimes.arraySetSize(2);
+				targetAngles.arraySetSize(2);
+
+				targetTimes[0] = AL::ALValue::array(0.3f);
+				targetTimes[1] = AL::ALValue::array(0.3f);
+
+				// targetAngles[0] = AL::ALValue::array(yaw);
+				targetAngles[0] = AL::ALValue::array(dataYawAverage);
+				// targetAngles[1] = AL::ALValue::array(pitch);
+				targetAngles[1] = AL::ALValue::array(dataPitchAverage);
+
+				// call the angle interpolation method.
+				// The joint will reach the desired angle at the specified time.
+				proxy.angleInterpolation(jointNames, targetAngles, targetTimes, anglesAreAbsolute);
+
+				HEAD_MOVED = true;
+
+			} catch(const AL::ALError& error) {
+				std::cerr << "Caught exception: " << error.what() << std::endl;
+				HEAD_MOVED = false;
+			}
+
+		dataPitchAverage = 0.0;
+		dataYawAverage = 0.0;
+
+		dataYawAverageLastValue = dataYawAverage;
+		dataPitchAverageLastValue = dataPitchAverage;
+
+	} else {
+
+		dataCount++;
+		dataYawAverage += yaw;
+		dataPitchAverage += pitch;
+
+		// std::cout << "Gathering movement information..." << std::endl;
 	}
 
 	return true;
@@ -197,8 +239,6 @@ int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 		mesg[n] = 0;
 		std::string message(mesg);
 		accel_data = split_string(message);
-
-		std::cout << "Accelerometer data received: " << accel_data[0] << "," << accel_data[1] << std::endl;
 
 		nao_moveHead(motionProxy, accel_data);
 		if (!HEAD_MOVED)
