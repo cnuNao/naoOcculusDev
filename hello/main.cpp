@@ -32,6 +32,9 @@ float dataPitchAverage = 0.0;
 float dataYawAverageLastValue = 0.0;
 float dataPitchAverageLastValue = 0.0;
 
+/**
+* recieves data and then tells the robot to move its head accordingly with correct delay
+*/
 bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 
 	bool anglesAreAbsolute 			= true;
@@ -183,6 +186,11 @@ std::vector<float> split_string(std::string string) {
 
 }
 
+/**
+* Will check for incomming accelerometer data and then tell the robot to move its head.
+* If the robot does not move its head it will then wait for the next set of data to be used
+* will then call the nao_moveHead function with data and set the HEAD_MOVED boolean
+*/
 int get_accel_stream(AL::ALMotionProxy& motionProxy) {
 
 	int sockfd;
