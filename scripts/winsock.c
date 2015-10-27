@@ -27,7 +27,7 @@ int main() {
 	int slen;
 	int recv_len;
 
-	char _buffer[BUFFLEN];
+	char _buffer[BUFLEN];
 	WSADATA wsa;
 
 	slen = sizeof(secondary_input);
