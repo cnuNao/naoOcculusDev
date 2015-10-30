@@ -86,7 +86,25 @@ qibuild run <module_name> -- --pip <IP_ADDRESS>
 
 **Make note of the double dashes** before the first argument. These *escape* the rest of the dashes before each flag.
 
-###Project members
+### Troubleshooting
+
+#### Configuration / Link error
+
+In the event of error during either configuring or building a project, use
+
+```
+qibuild <configure / make / run> <project_name> -c <toolchain>
+```
+
+#### qibuild Error
+
+In the event of running `qibuild run <project_name>` with an exit code of `13 Permission denied`, install an older version of `qibuild`. As a last resort, execute the binary file "manually".
+
+```
+./<project_name>/build-<toolchain_name>/sdk/bin/<project_name>
+```
+
+### Project members
 
 - Juan Vallejo
 - Jake Hayhurst

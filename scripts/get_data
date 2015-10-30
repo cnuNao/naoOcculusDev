@@ -5,12 +5,16 @@
  * Warning only works on Windows
  */
 
+
 var hmd 	= require('node-hmd');
 var devices = hmd.getSupportedDevices();
 var socket 	= require('dgram').createSocket('udp4');
 
 var manager = hmd.createManager('oculusrift');
 
+/**
+*gets the device orientation and then sends that data to the onDeviceOrientdationData fucntion
+*/
 function getDeviceOrientation() {
 	manager.getDeviceOrientation(function(err, data) {
 
@@ -28,6 +32,9 @@ function getDeviceOrientation() {
 	});
 }
 
+/**
+* Sends the orientation data to be recieved by the host computer
+*/
 function onDeviceOrientdationData(data, callback) {
 
 	var message = new Buffer(data.yaw + ',' + data.pitch + ',' + data.roll, 'utf-8');
@@ -41,7 +48,7 @@ function onDeviceOrientdationData(data, callback) {
 	}
 
 	clearTimeout(onDeviceOrientdationData.timeout);
-	onDeviceOrientdationData.timeout = setTimeout(callback, 700);
+	onDeviceOrientdationData.timeout = setTimeout(callback, 150);
 
 });
 
