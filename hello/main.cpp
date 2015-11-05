@@ -1,8 +1,7 @@
 /*
  * Module for extracting data from the robot
- * POSSIBLE FIX - Average every 5 values before sending to robot
  * Infinite impulse response
- * @author juanvallejo
+ * @author Juan Vallejo & Jake Hayhurst
  */
 
 #include <iostream>
@@ -21,7 +20,7 @@
 #include <time.h>
 
 const int remotePort		= 9559;
-std::string remoteAddress	= "192.168.10.115";
+std::string remoteAddress	= "192.168.10.106";
 
 bool HEAD_MOVED = false;
 int dataCount = 0;
@@ -75,13 +74,13 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 	// adjust pitch
 	pitch *= -1.0f;
 
-	if(dataCount >= 3) {
+	if(dataCount >= 2) {
 
 		// reset dataCount
 		dataCount = 0;
 
-		dataYawAverage /= 3.0;
-		dataPitchAverage /= 3.0;
+		dataYawAverage /= 2.0;
+		dataPitchAverage /= 2.0;
 
 		// std::cout << "Moving head yaw with value " << dataYawAverage << " (diff = " << std::abs((std::abs(dataYawAverageLastValue) - std::abs(dataYawAverage))) << ")" << std::endl;
 		// std::cout << "Moving head pitch with value " << dataPitchAverage << std::endl;
@@ -104,8 +103,8 @@ bool nao_moveHead(AL::ALMotionProxy& proxy, std::vector<float> radians) {
 				targetTimes.arraySetSize(2);
 				targetAngles.arraySetSize(2);
 
-				targetTimes[0] = AL::ALValue::array(0.2f);
-				targetTimes[1] = AL::ALValue::array(0.2f);
+				targetTimes[0] = AL::ALValue::array(0.35f);
+				targetTimes[1] = AL::ALValue::array(0.35f);
 
 				// targetAngles[0] = AL::ALValue::array(yaw);
 				targetAngles[0] = AL::ALValue::array(dataYawAverage);
